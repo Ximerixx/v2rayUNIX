@@ -80,37 +80,53 @@ if [ "$VER" = "latest" ]; then
 else
   V_VER="v$VER"
 fi
-
+echo "Done checking versions"
 mkdir ./v2raybin
 cd ./v2raybin
 V2RAY_URL="https://github.com/shadowsocks/v2ray-plugin/releases/download/${V_VER}/v2ray-plugin-linux-amd64-${V_VER}.tar.gz"
 echo ${V2RAY_URL}
 wget --no-check-certificate ${V2RAY_URL}
+echo "Done downloading v2ray"
 tar -zxvf v2ray-plugin-linux-amd64-$V_VER.tar.gz
+echo "unpacked..."
 rm -rf v2ray-plugin-linux-amd64-$V_VER.tar.gz
+echo "removing unnesesrly shit"
 mv v2ray-plugin_linux_amd64 /usr/bin/v2ray-plugin
+echo "moved to pluging directory"
 rm -rf ./v2raybin
+echo "clears out template"
 cd $SCRIPTPATH
+echo "done with v2RAY!!!"
 
 mv wwwroot.tar /usr/share/nginx/html
+echo "moving to wwwroot..."
 cd /usr/share/nginx/html
+echo "going to..."
 tar -xvf wwwroot.tar
+echo "unpacking..."
 rm -rf wwwroot.tar
+echo "deliting temp acrhive"
 cd $SCRIPTPATH
 
+
+echo "checking for existinf shadowsocks directory"
 if [ ! -d /etc/shadowsocks-libev ]; then  
   mkdir /etc/shadowsocks-libev
 fi
 
 # TODO: bug when PASSWORD contain '/'
+echo "making config"
+mkdir /conf/
 sed -e "/^#/d"\
     -e "s/\${PASSWORD}/${PASSWORD}/g"\
     -e "s/\${ENCRYPT}/${ENCRYPT}/g"\
     -e "s|\${V2RAYPATHH}|${V2RAYPATHH}|g"\
-    /conf/shadowsocks-libev_config.json >  /etc/shadowsocks-libev/config.json
+    $SCRIPTPATH/conf/shadowsocks-libev_config.json >  /etc/shadowsocks-libev/config.json
 echo /etc/shadowsocks-libev/config.json
 cat /etc/shadowsocks-libev/config.json
 
+
+echo "handling proxy..."
 if [ DISTRA="" ]; then
   s="s/proxy_pass/#proxy_pass/g"
   echo "site:use local wwwroot html"
@@ -124,7 +140,7 @@ sed -e "/^#/d"\
     -e "s|\${V2RAYPATHH}|${V2RAYPATHH}|g"\
     -e "s|\${QR_PATH}|${QR_PATH}|g"\
     -e "$s"\
-    /conf/nginx_ss.conf > /etc/nginx/conf.d/ss.conf
+    $SCRIPTPATH/conf/nginx_ss.conf > /etc/nginx/conf.d/ss.conf
 echo /etc/nginx/conf.d/ss.conf
 cat /etc/nginx/conf.d/ss.conf
 
