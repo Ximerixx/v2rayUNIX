@@ -43,12 +43,6 @@ echo Port for nginx $PORT
 
 
 
-
-
-
-
-
-
 if [$VER ="" ]; then
   VER="latest"
 fi
@@ -99,9 +93,11 @@ echo "clears out template"
 cd $SCRIPTPATH
 echo "done with v2RAY!!!"
 
-mv wwwroot.tar /usr/share/nginx/html
+echo "making wwwroot directory"
+mkdir /wwwroot/
+mv wwwroot.tar /wwwroot
 echo "moving to wwwroot..."
-cd /usr/share/nginx/html
+cd /wwwroot
 echo "going to..."
 tar -xvf wwwroot.tar
 echo "unpacking..."
@@ -149,11 +145,11 @@ cat /etc/nginx/conf.d/ss.conf
 if [ "$DOMAINED_IP" = "" ]; then
   echo "不生成二维码"
 else
-  [ ! -d /usr/share/nginx/html/${QR_PATH} ] && mkdir /usr/share/nginx/html/${QR_PATH}
+  [ ! -d /wwwroot/${QR_PATH} ] && mkdir /wwwroot/${QR_PATH}
   plugin=$(echo -n "v2ray;path=${V2RAYPATHH};host=${DOMAINED_IP};tls" | sed -e 's/\//%2F/g' -e 's/=/%3D/g' -e 's/;/%3B/g')
   ss="ss://$(echo -n ${ENCC}:${PPW} | base64 -w 0)@${DOMAINED_IP}:443?plugin=${plugin}" 
-  echo "${ss}" | tr -d '\n' > /usr/share/nginx/html/${QR_PATH}/index.html
-  echo -n "${ss}" | qrencode -s 6 -o /usr/share/nginx/html/${QR_PATH}/vpn.png
+  echo "${ss}" | tr -d '\n' > /wwwroot/${QR_PATH}/index.html
+  echo -n "${ss}" | qrencode -s 6 -o /wwwroot/${QR_PATH}/vpn.png
 fi
 
 ss-server -c /etc/shadowsocks-libev/config.json &
