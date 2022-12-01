@@ -1,5 +1,13 @@
 #!/bin/bash
 
+#installing essential packets
+	apt update -y \
+    && apt upgrade -y \
+    && apt install -y wget unzip qrencode\
+    && apt install -y shadowsocks-libev\
+    && apt install -y nginx\
+    && apt autoremove -y
+
 #v2ray-plugin版本
 #remembering our script path
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
