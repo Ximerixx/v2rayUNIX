@@ -39,6 +39,7 @@ echo V2ray path $V2RAYPATHH
 echo Domain, or server ip $DOMAINED_IP
 echo QR path $QR_PATH
 echo Distraction site $DISTRA
+echo Port for nginx $PORT
 
 
 

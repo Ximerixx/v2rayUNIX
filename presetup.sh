@@ -12,7 +12,8 @@ DOMAINED_IP="mstnw.ddns.net"
 QR_PATH="/jtkqxmxearkd1mlnystezy02zy3u4imkpfnupmgxzmltqbdmrsfz6q3kgovwxx86ywsoxhpgdcrat2jk"
 #Distraction site, if you won't fill it in, local will be used 
 DISTRA=""
-
+#port for nginx
+PORT="80"
 
 
 export VER
@@ -22,6 +23,7 @@ export V2RAYPATHH
 export DOMAINED_IP
 export QR_PATH
 export DISTRA
+export PORT
 
 ./setup.sh
 
