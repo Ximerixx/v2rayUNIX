@@ -1,30 +1,69 @@
 #!/bin/bash
-. /home/user/drugoi-script.sh
+
 #v2ray-plugin版本
-if [[ -z "${VER}" ]]; then
+#remembering our script path
+SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+promtsword=", if you don't sure type: "
+secword=" (it can be used for tightenin the security) "
+#let us know that user passes an argument
+if [ VER = "" ]
+#if no, asks user
+then 
+  read -p "V2ray version $promtsword'latest' :" VER
+  read -p "Encryption method $promtsword 'chacha20-ietf-poly1305' " ENCC
+  read -p "Prompt your password for V2Ray connection " PPW
+  read -p "Enter your desired V2Ray path$secwordstarting from /. ex: /ximerixx " V2RAYPATHH
+  read -p "your linked domain to THAT server, or Server's IP adress " DOMAINED_IP
+  read -p "Enter your desired QR_code path (also for tightiting a security) starting from /. IT CAN'T BE THE SAME AS V2Ray PATH!! " QR_PATH
+  read -p "Distraction site, if you won't fill it in, local will be used " DISTRA
+#if yes, make agruments like a variables there
+fi
+
+#gathering variavles from aruments sction
+
+
+echo "Be really sure that you won't tell them anybody, or foget"
+echo "So settings are:" 
+echo V2Ray version $VER
+echo Encryption method $ENCC
+echo V2Ray password $PPW
+echo V2ray path $V2RAYPATHH
+echo Domain, or server ip $DOMAINED_IP
+echo QR path $QR_PATH
+echo Distraction site $DISTRA
+
+
+
+
+
+
+
+
+
+if [$VER ="" ]; then
   VER="latest"
 fi
-echo ${VER}
+echo $VER
 
-if [[ -z "${PASSWORD}" ]]; then
+if [$PPW ="" ]; then
   PASSWORD="5c301bb8-6c77-41a0-a606-4ba11bbab084"
 fi
-echo ${PASSWORD}
+echo $PASSWORD
 
-if [[ -z "${ENCRYPT}" ]]; then
+if [$ENCC="" ]; then
   ENCRYPT="chacha20-ietf-poly1305"
 fi
 
 
-if [[ -z "${V2_Path}" ]]; then
-  V2_Path="/s233"
+if [$V2RAYPATHH ="" ]; then
+  V2RAYPATHH="/s233"
 fi
-echo ${V2_Path}
+echo ${V2RAYPATHH}
 
-if [[ -z "${QR_Path}" ]]; then
-  QR_Path="/qr_img"
+if [$QR_PATH ="" ]; then
+  QR_PATH="/qr_img"
 fi
-echo ${QR_Path}
+echo ${QR_PATH}
 
 
 if [ "$VER" = "latest" ]; then
@@ -34,19 +73,22 @@ else
   V_VER="v$VER"
 fi
 
-mkdir /v2raybin
-cd /v2raybin
+mkdir ./v2raybin
+cd ./v2raybin
 V2RAY_URL="https://github.com/shadowsocks/v2ray-plugin/releases/download/${V_VER}/v2ray-plugin-linux-amd64-${V_VER}.tar.gz"
 echo ${V2RAY_URL}
 wget --no-check-certificate ${V2RAY_URL}
 tar -zxvf v2ray-plugin-linux-amd64-$V_VER.tar.gz
 rm -rf v2ray-plugin-linux-amd64-$V_VER.tar.gz
 mv v2ray-plugin_linux_amd64 /usr/bin/v2ray-plugin
-rm -rf /v2raybin
+rm -rf ./v2raybin
+cd $SCRIPTPATH
 
-cd /wwwroot
+mv wwwroot.tar /usr/share/nginx/html
+cd /usr/share/nginx/html
 tar -xvf wwwroot.tar
 rm -rf wwwroot.tar
+cd $SCRIPTPATH
 
 if [ ! -d /etc/shadowsocks-libev ]; then  
   mkdir /etc/shadowsocks-libev
@@ -56,37 +98,37 @@ fi
 sed -e "/^#/d"\
     -e "s/\${PASSWORD}/${PASSWORD}/g"\
     -e "s/\${ENCRYPT}/${ENCRYPT}/g"\
-    -e "s|\${V2_Path}|${V2_Path}|g"\
+    -e "s|\${V2RAYPATHH}|${V2RAYPATHH}|g"\
     /conf/shadowsocks-libev_config.json >  /etc/shadowsocks-libev/config.json
 echo /etc/shadowsocks-libev/config.json
 cat /etc/shadowsocks-libev/config.json
 
-if [[ -z "${ProxySite}" ]]; then
+if [ DISTRA="" ]; then
   s="s/proxy_pass/#proxy_pass/g"
   echo "site:use local wwwroot html"
 else
-  s="s|\${ProxySite}|${ProxySite}|g"
-  echo "site: ${ProxySite}"
+  s="s|\${DISTRA}|${DISTRA}|g"
+  echo "site: ${DISTRA}"
 fi
 
 sed -e "/^#/d"\
     -e "s/\${PORT}/${PORT}/g"\
-    -e "s|\${V2_Path}|${V2_Path}|g"\
-    -e "s|\${QR_Path}|${QR_Path}|g"\
+    -e "s|\${V2RAYPATHH}|${V2RAYPATHH}|g"\
+    -e "s|\${QR_PATH}|${QR_PATH}|g"\
     -e "$s"\
     /conf/nginx_ss.conf > /etc/nginx/conf.d/ss.conf
 echo /etc/nginx/conf.d/ss.conf
 cat /etc/nginx/conf.d/ss.conf
 
 
-if [ "$AppName" = "no" ]; then
+if [ "$DOMAINED_IP" = "" ]; then
   echo "不生成二维码"
 else
-  [ ! -d /wwwroot/${QR_Path} ] && mkdir /wwwroot/${QR_Path}
-  plugin=$(echo -n "v2ray;path=${V2_Path};host=${AppName}.herokuapp.com;tls" | sed -e 's/\//%2F/g' -e 's/=/%3D/g' -e 's/;/%3B/g')
-  ss="ss://$(echo -n ${ENCRYPT}:${PASSWORD} | base64 -w 0)@${AppName}.herokuapp.com:443?plugin=${plugin}" 
-  echo "${ss}" | tr -d '\n' > /wwwroot/${QR_Path}/index.html
-  echo -n "${ss}" | qrencode -s 6 -o /wwwroot/${QR_Path}/vpn.png
+  [ ! -d /wwwroot/${QR_PATH} ] && mkdir /wwwroot/${QR_PATH}
+  plugin=$(echo -n "v2ray;path=${V2RAYPATHH};host=${DOMAINED_IP};tls" | sed -e 's/\//%2F/g' -e 's/=/%3D/g' -e 's/;/%3B/g')
+  ss="ss://$(echo -n ${ENCRYPT}:${PASSWORD} | base64 -w 0)@${DOMAINED_IP}:443?plugin=${plugin}" 
+  echo "${ss}" | tr -d '\n' > /wwwroot/${QR_PATH}/index.html
+  echo -n "${ss}" | qrencode -s 6 -o /wwwroot/${QR_PATH}/vpn.png
 fi
 
 ss-server -c /etc/shadowsocks-libev/config.json &
