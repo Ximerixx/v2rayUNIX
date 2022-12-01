@@ -118,8 +118,8 @@ fi
 echo "making config"
 mkdir /conf/
 sed -e "/^#/d"\
-    -e "s/\${PASSWORD}/${PASSWORD}/g"\
-    -e "s/\${ENCRYPT}/${ENCRYPT}/g"\
+    -e "s/\${PPW}/${PPW}/g"\
+    -e "s/\${ENCC}/${ENCC}/g"\
     -e "s|\${V2RAYPATHH}|${V2RAYPATHH}|g"\
     $SCRIPTPATH/conf/shadowsocks-libev_config.json >  /etc/shadowsocks-libev/config.json
 echo /etc/shadowsocks-libev/config.json
@@ -150,7 +150,7 @@ if [ "$DOMAINED_IP" = "" ]; then
 else
   [ ! -d /usr/share/nginx/html/${QR_PATH} ] && mkdir /usr/share/nginx/html/${QR_PATH}
   plugin=$(echo -n "v2ray;path=${V2RAYPATHH};host=${DOMAINED_IP};tls" | sed -e 's/\//%2F/g' -e 's/=/%3D/g' -e 's/;/%3B/g')
-  ss="ss://$(echo -n ${ENCRYPT}:${PASSWORD} | base64 -w 0)@${DOMAINED_IP}:443?plugin=${plugin}" 
+  ss="ss://$(echo -n ${ENCC}:${PPW} | base64 -w 0)@${DOMAINED_IP}:443?plugin=${plugin}" 
   echo "${ss}" | tr -d '\n' > /usr/share/nginx/html/${QR_PATH}/index.html
   echo -n "${ss}" | qrencode -s 6 -o /usr/share/nginx/html/${QR_PATH}/vpn.png
 fi
