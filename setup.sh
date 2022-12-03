@@ -21,6 +21,7 @@ secword=" (it can be used for tightenin the security) "
 if [ VER = "" ]
 #if no, asks user
 then 
+#gathering variavles from aruments sction
   read -p "V2ray version $promtsword'latest' :" VER
   read -p "Encryption method $promtsword 'chacha20-ietf-poly1305' " ENCC
   read -p "Prompt your password for V2Ray connection " PPW
@@ -31,9 +32,8 @@ then
 #if yes, make agruments like a variables there
 fi
 
-#gathering variavles from aruments sction
 
-
+#echoing all variables that that script has
 echo "Be really sure that you won't tell them anybody, or foget"
 echo "So settings are:" 
 echo V2Ray version $VER

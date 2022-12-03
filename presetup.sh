@@ -24,7 +24,7 @@ export DOMAINED_IP
 export QR_PATH
 export DISTRA
 export PORT
-
+ chmod +x setup.sh
 ./setup.sh
 
 
