@@ -8,6 +8,10 @@
     && apt install -y nginx\
     && apt autoremove -y
 
+
+#DISABLING AND STOPPING NGINX TO AWARE "bind adress error at the end"
+systemctl stop nginx
+
 #v2ray-plugin版本
 #remembering our script path
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
@@ -43,27 +47,27 @@ echo Port for nginx $PORT
 
 
 
-if [$VER ="" ]; then
+if [[ -z "${VER}" ]]; then
   VER="latest"
 fi
-echo $VER
+echo ${VER}
 
-if [$PPW ="" ]; then
+if [[ -z "${PPW}" ]]; then
   PASSWORD="5c301bb8-6c77-41a0-a606-4ba11bbab084"
 fi
 echo $PASSWORD
 
-if [$ENCC="" ]; then
+if [[ -z "${ENCC}" ]]; then
   ENCRYPT="chacha20-ietf-poly1305"
 fi
 
 
-if [$V2RAYPATHH ="" ]; then
+if [[ -z "${V2RAYPATHH}" ]]; then
   V2RAYPATHH="/s233"
 fi
 echo ${V2RAYPATHH}
 
-if [$QR_PATH ="" ]; then
+if [[ -z "${QR_PATH}" ]]; then
   QR_PATH="/qr_img"
 fi
 echo ${QR_PATH}
