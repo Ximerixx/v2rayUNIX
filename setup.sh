@@ -95,7 +95,7 @@ echo "done with v2RAY!!!"
 
 echo "making wwwroot directory"
 mkdir /wwwroot/
-mv wwwroot.tar /wwwroot
+mv $SCRIPTPATH/wwwroot.tar /wwwroot
 echo "moving to wwwroot..."
 cd /wwwroot
 echo "going to..."
@@ -109,11 +109,14 @@ cd $SCRIPTPATH
 echo "checking for existinf shadowsocks directory"
 if [ ! -d /etc/shadowsocks-libev ]; then  
   mkdir /etc/shadowsocks-libev
+else
+  rm -rf /etc/shadowsocks-libev/
+  mkdir /etc/shadowsocks-libev/
 fi
 
 # TODO: bug when PASSWORD contain '/'
 echo "making config"
-mkdir /conf/
+#mkdir /conf/
 sed -e "/^#/d"\
     -e "s/\${PPW}/${PPW}/g"\
     -e "s/\${ENCC}/${ENCC}/g"\
@@ -132,6 +135,12 @@ else
   echo "site: ${DISTRA}"
 fi
 
+if [ ! -d /etc/nginx/conf.d ]; then  
+  mkdir /etc/nginx/conf.d
+else
+  rm -rf /etc/nginx/conf.d
+  mkdir /etc/nginx/conf.d
+fi
 sed -e "/^#/d"\
     -e "s/\${PORT}/${PORT}/g"\
     -e "s|\${V2RAYPATHH}|${V2RAYPATHH}|g"\
@@ -141,6 +150,9 @@ sed -e "/^#/d"\
 echo /etc/nginx/conf.d/ss.conf
 cat /etc/nginx/conf.d/ss.conf
 
+echo \n
+echo \n
+echo \n
 
 if [ "$DOMAINED_IP" = "" ]; then
   echo "不生成二维码"
