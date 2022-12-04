@@ -1,6 +1,9 @@
 #!/bin/bash
 
 #installing essential packets
+#WHOAMI= whoami
+#echo $WHOAMI
+#if [$WHOAMI 
 	apt update -y \
     && apt upgrade -y \
     && apt install -y wget unzip qrencode\
@@ -80,8 +83,8 @@ else
   V_VER="v$VER"
 fi
 echo "Done checking versions"
-mkdir ./v2raybin
-cd ./v2raybin
+mkdir $SCRIPTPATH/v2raybin
+cd $SCRIPTPATH/v2raybin
 V2RAY_URL="https://github.com/shadowsocks/v2ray-plugin/releases/download/${V_VER}/v2ray-plugin-linux-amd64-${V_VER}.tar.gz"
 echo ${V2RAY_URL}
 wget --no-check-certificate ${V2RAY_URL}
@@ -92,20 +95,20 @@ rm -rf v2ray-plugin-linux-amd64-$V_VER.tar.gz
 echo "removing unnesesrly shit"
 mv v2ray-plugin_linux_amd64 /usr/bin/v2ray-plugin
 echo "moved to pluging directory"
-rm -rf ./v2raybin
+rm -rf $SCRIPTPATH/v2raybin
 echo "clears out template"
 cd $SCRIPTPATH
 echo "done with v2RAY!!!"
 
 echo "making wwwroot directory"
 mkdir /wwwroot/
-mv $SCRIPTPATH/wwwroot.tar /wwwroot
+cp $SCRIPTPATH/wwwroot.tar /wwwroot/
 echo "moving to wwwroot..."
-cd /wwwroot
+cd /wwwroot/
 echo "going to..."
-tar -xvf wwwroot.tar
+tar -xvf /wwwroot/wwwroot.tar
 echo "unpacking..."
-rm -rf wwwroot.tar
+rm -rf /wwwroot/wwwroot.tar
 echo "deliting temp acrhive"
 cd $SCRIPTPATH
 
@@ -139,7 +142,7 @@ else
   echo "site: ${DISTRA}"
 fi
 
-if [ ! -d /etc/nginx/conf.d ]; then  
+if [ ! -d /etc/nginx/conf.d ]; then
   mkdir /etc/nginx/conf.d
 else
   rm -rf /etc/nginx/conf.d
@@ -157,17 +160,26 @@ cat /etc/nginx/conf.d/ss.conf
 echo \n
 echo \n
 echo \n
-
+ #generating QR and ss://
 if [ "$DOMAINED_IP" = "" ]; then
   echo "不生成二维码"
 else
+  echo "generating QR and ss://"
   [ ! -d /wwwroot/${QR_PATH} ] && mkdir /wwwroot/${QR_PATH}
-  plugin=$(echo -n "v2ray;path=${V2RAYPATHH};host=${DOMAINED_IP};tls" | sed -e 's/\//%2F/g' -e 's/=/%3D/g' -e 's/;/%3B/g')
-  ss="ss://$(echo -n ${ENCC}:${PPW} | base64 -w 0)@${DOMAINED_IP}:443?plugin=${plugin}" 
+  plugin=$(echo -n "v2ray;path=${V2RAYPATHH};host=${DOMAINED_IP}" | sed -e 's/\//%2F/g' -e 's/=/%3D/g' -e 's/;/%3B/g')
+  #Old version
+  #ss="ss://$(echo -n ${ENCC}:${PPW} | base64 -w 0)@${DOMAINED_IP}:443?plugin=${plugin}"
+  ss="ss://$(echo -n ${ENCC}:${PPW} | base64 -w 0)@${DOMAINED_IP}:${PORT}?plugin=${plugin}" 
   echo "${ss}" | tr -d '\n' > /wwwroot/${QR_PATH}/index.html
   echo -n "${ss}" | qrencode -s 6 -o /wwwroot/${QR_PATH}/vpn.png
 fi
 
 ss-server -c /etc/shadowsocks-libev/config.json &
 rm -rf /etc/nginx/sites-enabled/default
-nginx -g 'daemon off;'
+#no need on debian
+#nginx -g 'daemon off;'
+systemctl start nginx
+echo "DONE!"
+echo "Link for qr code: http://${DOMAINED_IP}${QR_PATH}/vpn.png"
+echo "Link for ss: http://${DOMAINED_IP}${QR_PATH}/"
+echo "ss=${ss}"
