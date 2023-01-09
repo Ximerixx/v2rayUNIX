@@ -9,9 +9,9 @@ VER="latest"
 #Encryption method 'chacha20-ietf-poly1305'
 ENCC="chacha20-ietf-poly1305"
 #Prompt your password for V2Ray connection " 
-PPW="MazhA12dREcw213fdew1F&5BFke21349CW8fvvwn!#$@$7hby878cwWCcCW7T^wdcw"
+PPW="MazhA12dREcw213"
 #Enter your desired V2Ray path$ starting from /. ex: /ximerixx  
-V2RAYPATHH="/zbsndty6rly0sjmsmkymdja1oejgqptceuk3ercma96xchvnwj1pbq6qrfq1xnukwlwuaaacxpbvp1xn"
+V2RAYPATHH="/zbs"
 #your linked domain to THAT server, or Server's IP adress " 
 DOMAINED_IP="mstnw.ddns.net"
 #Enter your deired QR_code path (also for tightiting a security) starting from /. IT CAN'T BE THE SAME AS V2Ray PATH!!  
