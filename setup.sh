@@ -29,12 +29,28 @@ then
   read -p "your linked domain to THAT server, or Server's IP adress " DOMAINED_IP
   read -p "Enter your desired QR_code path (also for tightiting a security) starting from /. IT CAN'T BE THE SAME AS V2Ray PATH!! " QR_PATH
   read -p "Distraction site, if you won't fill it in, local will be used " DISTRA
+  read -p "use SSL & Websoket feature? if yes you MUST use 443 if no 80 [y/n]" SSLC
 #if yes, make agruments like a variables there
 fi
 
-
+if [[ -z "${SSLC}" ]]
+ then
+    echo "You defenetly need to choosw ssl option"
+    exit
+  else 
+    if [ "$SSLC" = "y" ]
+      then
+        PORT="443"
+        SSLC=";tls"
+    fi
+    if [ "$SSLC" = "n"]
+      then
+        PORT="80"
+        SSLC=""
+    fi
+fi
 #echoing all variables that that script has
-echo "Be really sure that you won't tell them anybody, or foget"
+echo "Be really sure that you won't tell them anybody, or forget"
 echo "So settings are:" 
 echo V2Ray version $VER
 echo Encryption method $ENCC
@@ -43,8 +59,15 @@ echo V2ray path $V2RAYPATHH
 echo Domain, or server ip $DOMAINED_IP
 echo QR path $QR_PATH
 echo Distraction site $DISTRA
+    if [ "$SSLC" = "n" ]
+      then
+        echo "SSL WON'T be used"
+        fi
+    if [ "$SSLC" = "y"]
+      then
+        echo "SSL WILL be used please don't forget to bind ssl certificate inside nginx configuration"
+      fi
 echo Port for nginx $PORT
-
 
 
 if [[ -z "${VER}" ]]; then
@@ -78,7 +101,7 @@ if [ "$VER" = "latest" ]; then
   [[ -z "${V_VER}" ]] && V_VER="v1.3.0"
 else
   V_VER="v$VER"
-fi
+fi 
 echo "Done checking versions"
 mkdir ./v2raybin
 cd ./v2raybin
@@ -162,7 +185,7 @@ if [ "$DOMAINED_IP" = "" ]; then
   echo "不生成二维码"
 else
   [ ! -d /wwwroot/${QR_PATH} ] && mkdir /wwwroot/${QR_PATH}
-  plugin=$(echo -n "v2ray;path=${V2RAYPATHH};host=${DOMAINED_IP};tls" | sed -e 's/\//%2F/g' -e 's/=/%3D/g' -e 's/;/%3B/g')
+  plugin=$(echo -n "v2ray;path=${V2RAYPATHH};host=${DOMAINED_IP}${SSLC}" | sed -e 's/\//%2F/g' -e 's/=/%3D/g' -e 's/;/%3B/g')
   ss="ss://$(echo -n ${ENCC}:${PPW} | base64 -w 0)@${DOMAINED_IP}:443?plugin=${plugin}" 
   echo "${ss}" | tr -d '\n' > /wwwroot/${QR_PATH}/index.html
   echo -n "${ss}" | qrencode -s 6 -o /wwwroot/${QR_PATH}/vpn.png
