@@ -9,13 +9,13 @@ VER="latest"
 #Encryption method 'chacha20-ietf-poly1305'
 ENCC="chacha20-ietf-poly1305"
 #Prompt your password for V2Ray connection " 
-PPW="MazhA12dREcw213"
-#Enter your desired V2Ray path$ starting from /. ex: /ximerixx  
+PPW="LOLOLOLOLOL"
+#Enter your desired V2Ray path$ starting from /. ex: /trax  
 V2RAYPATHH="/zbs"
 #your linked domain to THAT server, or Server's IP adress " 
-DOMAINED_IP="mstnw.ddns.net"
+DOMAINED_IP=">IP<"
 #Enter your deired QR_code path (also for tightiting a security) starting from /. IT CAN'T BE THE SAME AS V2Ray PATH!!  
-QR_PATH="/jtkqxmxearkd1mlnystezy02zy3u4imkpfnupmgxzmltqbdmrsfz6q3kgovwxx86ywsoxhpgdcrat2jk"
+QR_PATH="/jtkqxmxearkd1mlnystezy02zy3u4imkpfnupmgxzmltqbdmrsfz6q3kgovwxx86ywsoqdwxhpgdcrat2jk"
 #Distraction site, if you won't fill it in, local will be used 
 DISTRA=""
 #port for nginx
